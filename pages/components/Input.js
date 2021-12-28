@@ -1,6 +1,12 @@
-import { CalendarIcon, ChartBarIcon, EmojiHappyIcon, PhotographIcon, XIcon } from "@heroicons/react/outline";
+import {
+  CalendarIcon,
+  ChartBarIcon,
+  EmojiHappyIcon,
+  PhotographIcon,
+  XIcon,
+} from "@heroicons/react/outline";
 import { Picker } from "emoji-mart";
-import "emoji-mart/css/emoji-mart.css"
+import "emoji-mart/css/emoji-mart.css";
 import { useState, useRef } from "react";
 import { db, storage } from "../../firebase";
 import {
@@ -17,34 +23,23 @@ import { getDownloadURL, ref, uploadString } from "@firebase/storage";
 function Input() {
   const [input, setInput] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
-  const [showEmojis, setShowEmojis] = useState(false)
-  const [loading, setLoading] = useState(false)
+  const [showEmojis, setShowEmojis] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const filePickerRef = useRef(null)
-
-  const addImageToPost = (e) => {
-    const reader = new FileReader();
-    if (e.target.files[0]) {
-      reader.readAsDataURL(e.target.files[0]);
-    }
-
-    reader.onload = (readerEvent) => {
-      setSelectedFile(readerEvent.target.result);
-    };
-  }
+  const filePickerRef = useRef(null);
 
   const sendPost = async () => {
-    if (loading) return
-    setLoading(true)
+    if (loading) return;
+    setLoading(true);
 
-    const docRef = await addDoc(collection(db, 'posts'), {
-        // id: session.user.uid,
-        // username: session.user.name,
-        // userImg: session.user.image,
-        // tag: session.user.tag,
-        text: input,
-        timestamp: serverTimestamp(),
-    })
+    const docRef = await addDoc(collection(db, "posts"), {
+      // id: session.user.uid,
+      // username: session.user.name,
+      // userImg: session.user.image,
+      // tag: session.user.tag,
+      text: input,
+      timestamp: serverTimestamp(),
+    });
 
     const imageRef = ref(storage, `posts/${docRef.id}/image`);
 
@@ -61,8 +56,18 @@ function Input() {
     setInput("");
     setSelectedFile(null);
     setShowEmojis(false);
+  };
 
-  }
+  const addImageToPost = (e) => {
+    const reader = new FileReader();
+    if (e.target.files[0]) {
+      reader.readAsDataURL(e.target.files[0]);
+    }
+
+    reader.onload = (readerEvent) => {
+      setSelectedFile(readerEvent.target.result);
+    };
+  };
 
   const addEmoji = (e) => {
     let sym = e.unified.split("-");
@@ -74,7 +79,9 @@ function Input() {
 
   return (
     <div
-      className={`border-b border-gray-700 p-3 flex space-x-3 overflow-y-scroll scrollbar-hide`}
+      className={`border-b border-gray-700 p-3 flex space-x-3 overflow-y-scroll scrollbar-hide ${
+        loading && "opacity-60"
+      }`}
     >
       <img src="" alt="" className="h-11 w-11 rounded-full cursor-pointer" />
       {/* divide-y creates a border between each child w/o having to add border as class for each child*/}
@@ -105,18 +112,22 @@ function Input() {
             </div>
           )}
         </div>
-        <div className="flex items-center justify-between pt-2.5">
-          <div className="flex items-center">
-            <div className="icon" onClick={() => filePickerRef.current.click()}>
-              <PhotographIcon className="h-[22px] text-[#1d9bf0]" />
-              <input
-                type="file"
-                ref={filePickerRef}
-                hidden
-                onChange={addImageToPost}
-              />
-            </div>
-            <div className="icon rotate-90">
+        {!loading && (
+          <div className="flex items-center justify-between pt-2.5">
+            <div className="flex items-center">
+              <div
+                className="icon"
+                onClick={() => filePickerRef.current.click()}
+              >
+                <PhotographIcon className="h-[22px] text-[#1d9bf0]" />
+                <input
+                  type="file"
+                  ref={filePickerRef}
+                  hidden
+                  onChange={addImageToPost}
+                />
+              </div>
+              <div className="icon rotate-90">
                 <ChartBarIcon className="text-[#1d9bf0] h-[22px]" />
               </div>
 
@@ -141,15 +152,16 @@ function Input() {
                   theme="dark"
                 />
               )}
-          </div>
-          <button
+            </div>
+            <button
               className="bg-[#1d9bf0] text-white rounded-full px-4 py-1.5 font-bold shadow-md hover:bg-[#1a8cd8] disabled:hover:bg-[#1d9bf0] disabled:opacity-50 disabled:cursor-default"
               disabled={!input && !selectedFile}
               onClick={sendPost}
             >
               Tweet
             </button>
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );
