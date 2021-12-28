@@ -2,20 +2,66 @@ import { CalendarIcon, ChartBarIcon, EmojiHappyIcon, PhotographIcon, XIcon } fro
 import { Picker } from "emoji-mart";
 import "emoji-mart/css/emoji-mart.css"
 import { useState, useRef } from "react";
+import { db, storage } from "../../firebase";
+import {
+  addDoc,
+  collection,
+  doc,
+  serverTimestamp,
+  updateDoc,
+} from "@firebase/firestore";
+import { getDownloadURL, ref, uploadString } from "@firebase/storage";
+// import { signOut, useSession } from "next-auth/react";
+// import dynamic from "next/dynamic";
 
 function Input() {
   const [input, setInput] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
   const [showEmojis, setShowEmojis] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   const filePickerRef = useRef(null)
 
-  const addImageToPost = () => {
+  const addImageToPost = (e) => {
+    const reader = new FileReader();
+    if (e.target.files[0]) {
+      reader.readAsDataURL(e.target.files[0]);
+    }
 
+    reader.onload = (readerEvent) => {
+      setSelectedFile(readerEvent.target.result);
+    };
   }
 
-  const sendPost = () => {
-      
+  const sendPost = async () => {
+    if (loading) return
+    setLoading(true)
+
+    const docRef = await addDoc(collection(db, 'posts'), {
+        // id: session.user.uid,
+        // username: session.user.name,
+        // userImg: session.user.image,
+        // tag: session.user.tag,
+        text: input,
+        timestamp: serverTimestamp(),
+    })
+
+    const imageRef = ref(storage, `posts/${docRef.id}/image`);
+
+    if (selectedFile) {
+      await uploadString(imageRef, selectedFile, "data_url").then(async () => {
+        const downloadURL = await getDownloadURL(imageRef);
+        await updateDoc(doc(db, "posts", docRef.id), {
+          image: downloadURL,
+        });
+      });
+    }
+
+    setLoading(false);
+    setInput("");
+    setSelectedFile(null);
+    setShowEmojis(false);
+
   }
 
   const addEmoji = (e) => {
@@ -33,7 +79,7 @@ function Input() {
       <img src="" alt="" className="h-11 w-11 rounded-full cursor-pointer" />
       {/* divide-y creates a border between each child w/o having to add border as class for each child*/}
       <div className="w-full divide-y divide-gray-700">
-        <div className={``}>
+        <div className={`${selectedFile && "pb-7"} ${input && "space-y-2.5"}`}>
           <textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
