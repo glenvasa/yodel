@@ -31,20 +31,66 @@ import { db } from "../firebase";
 function Post({ id, post, postPage }) {
   const { data: session } = useSession();
 
-  const [isOpen, setIsOpen] = useRecoilState(modalState)
+  const [isOpen, setIsOpen] = useRecoilState(modalState);
   const [postId, setPostId] = useRecoilState(postIdState);
-  
+
   const [comments, setComments] = useState([]);
   const [likes, setLikes] = useState([]);
   const [liked, setLiked] = useState(false);
-  
+
   const router = useRouter();
 
 
+  useEffect(
+    () =>
+      onSnapshot(
+        query(
+            // queries posts collection by post id and gets all comments
+          collection(db, "posts", id, "comments"),
+          orderBy("timestamp", "desc")
+        ),
+        (snapshot) => setComments(snapshot.docs)
+      ),
+    [db, id]
+  );
+
+  useEffect(
+    () =>
+     // goes through all posts by id and gets all likes
+      onSnapshot(
+          collection(db, "posts", id, "likes"), 
+      (snapshot) =>
+        setLikes(snapshot.docs)
+      ),
+    [db, id]
+  );
+
+  useEffect(
+    () =>
+    // this will check the likes array and find any likes where the like.id === session.user.uid 
+    // (meaning the logged in user already liked that particular post or posts) 
+    // if the index of such a like is not -1 (meaning the user already liked the post) then setLikced(true) will occur 
+      setLiked(
+        likes.findIndex((like) => like.id === session?.user?.uid) !== -1
+      ),
+    [likes]
+  );
+
+  const likePost = async () => {
+    if (liked) {
+      await deleteDoc(doc(db, "posts", id, "likes", session.user.uid));
+    } else {
+      await setDoc(doc(db, "posts", id, "likes", session.user.uid), {
+        username: session.user.name,
+      });
+    }
+  };
 
   return (
-    <div className="p-3 flex cursor-pointer border-b border-gray-700"
-    onClick={() => router.push(`/${id}`)}>
+    <div
+      className="p-3 flex cursor-pointer border-b border-gray-700"
+      onClick={() => router.push(`/${id}`)}
+    >
       {!postPage && (
         <img
           src={post?.userImg}
@@ -106,10 +152,10 @@ function Post({ id, post, postPage }) {
           <div
             className="flex items-center space-x-1 group"
             onClick={(e) => {
-                // the div that contains the entire post has an onClick to push to the [id] page
-                // if clicked anywhere on the div; however, for 3 of the icons: heart for likes, 
-                // chat for the comment modal and trash for delete, we want different behavior
-                // which is why e.stopPropagation() is used to prevent onClick from parent div
+              // the div that contains the entire post has an onClick to push to the [id] page
+              // if clicked anywhere on the div; however, for 3 of the icons: heart for likes,
+              // chat for the comment modal and trash for delete, we want different behavior
+              // which is why e.stopPropagation() is used to prevent onClick from parent div
               e.stopPropagation();
               // sets the PostId state globally through useRecoilState(postIdState)
               setPostId(id);
@@ -127,6 +173,9 @@ function Post({ id, post, postPage }) {
             )}
           </div>
 
+          {/* we only want to give the post owner the ability to see the trash can icon
+        and delete the post which occurs if post.id is same as session.user.uid 
+        otherwise we want the user to see the retweet icon*/}
           {session.user.uid === post?.id ? (
             <div
               className="flex items-center space-x-1 group"
