@@ -134,7 +134,7 @@ function Post({ id, post, postPage }) {
             )}
           </div>
           <div className="icon group flex-shrink-0 ml-auto">
-            <DotsHorizontalIcon className="h-5 text-[#6e767d] group-hover:text-[#1d9bf0]" />
+            <DotsHorizontalIcon className="h-5 text-[#6e767d] group-hover:text-[#3ebe5e]" />
           </div>
         </div>
         {postPage && (
@@ -163,8 +163,8 @@ function Post({ id, post, postPage }) {
               setIsOpen(true);
             }}
           >
-            <div className="icon group-hover:bg-[#1d9bf0] group-hover:bg-opacity-10">
-              <ChatIcon className="h-5 group-hover:text-[#1d9bf0]" />
+            <div className="icon group-hover:[#3ebe5e] group-hover:bg-opacity-10">
+              <ChatIcon className="h-5 group-hover:text-[#3ebe5e]" />
             </div>
             {comments.length > 0 && (
               <span className="group-hover:text-[#1d9bf0] text-sm">
@@ -192,7 +192,7 @@ function Post({ id, post, postPage }) {
           ) : (
             <div className="flex items-center space-x-1 group">
               <div className="icon group-hover:bg-green-500/10">
-                <SwitchHorizontalIcon className="h-5 group-hover:text-green-500" />
+                <SwitchHorizontalIcon className="h-5 group-hover:text-[#1d9bf0]" />
               </div>
             </div>
           )}
@@ -223,10 +223,10 @@ function Post({ id, post, postPage }) {
           </div>
 
           <div className="icon group">
-            <ShareIcon className="h-5 group-hover:text-[#1d9bf0]" />
+            <ShareIcon className="h-5 group-hover:text-[#3ebe5e]" />
           </div>
           <div className="icon group">
-            <ChartBarIcon className="h-5 group-hover:text-[#1d9bf0]" />
+            <ChartBarIcon className="h-5 group-hover:text-[#3ebe5e]" />
           </div>
         </div>
       </div>
