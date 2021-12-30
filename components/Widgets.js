@@ -10,8 +10,8 @@ function Widgets({ trendingResults, followResults }) {
           <SearchIcon className="text-gray-500 h-5 z-50" />
           <input
             type="text"
-            className="bg-transparent placeholder-gray-500 outline-none text-[#d9d9d9] absolute inset-0 pl-11 border border-transparent w-full focus:border-[#1d9bf0] rounded-full focus:bg-black focus:shadow-lg"
-            placeholder="Search Twitter"
+            className="bg-transparent placeholder-gray-500 outline-none text-[#d9d9d9] absolute inset-0 pl-11 border border-transparent w-full focus:border-[#09571c] rounded-full focus:bg-black focus:shadow-lg"
+            placeholder="Search Yodel"
           />
         </div>
       </div>
@@ -21,7 +21,7 @@ function Widgets({ trendingResults, followResults }) {
         {trendingResults.map((result, index) => (
           <Trending key={index} result={result} />
         ))}
-        <button className="hover:bg-white hover:bg-opacity-[0.03] px-4 py-3 cursor-pointer transition duration-200 ease-out flex items-center justify-between w-full text-[#1d9bf0] font-light">
+        <button className="hover:bg-white hover:bg-opacity-[0.03] px-4 py-3 cursor-pointer transition duration-200 ease-out flex items-center justify-between w-full text-[#3ebe5e] font-light">
           Show more
         </button>
       </div>
