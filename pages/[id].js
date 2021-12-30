@@ -12,11 +12,12 @@ import { useRecoilState } from "recoil";
 import { modalState } from "../atoms/modalAtom";
 import Modal from "../components/Modal";
 import Sidebar from "../components/Sidebar";
-// import Widgets from "../components/Widgets";
+import Widgets from "../components/Widgets";
 import Post from "../components/Post";
+import Login from "../components/Login";
 import { db } from "../firebase";
 import { ArrowLeftIcon } from "@heroicons/react/solid";
-// import Comment from "../components/Comment";
+import Comment from "../components/Comment";
 import Head from "next/head";
 
 function PostPage({ trendingResults, followResults, providers }) {
@@ -38,17 +39,17 @@ function PostPage({ trendingResults, followResults, providers }) {
     [db]
   );
 
-  // useEffect(
-  //   () =>
-  //     onSnapshot(
-  //       query(
-  //         collection(db, "posts", id, "comments"),
-  //         orderBy("timestamp", "desc")
-  //       ),
-  //       (snapshot) => setComments(snapshot.docs)
-  //     ),
-  //   [db, id]
-  // );
+  useEffect(
+    () =>
+      onSnapshot(
+        query(
+          collection(db, "posts", id, "comments"),
+          orderBy("timestamp", "desc")
+        ),
+        (snapshot) => setComments(snapshot.docs)
+      ),
+    [db, id]
+  );
 
   if (!session) return <Login providers={providers} />;
 
@@ -86,10 +87,10 @@ function PostPage({ trendingResults, followResults, providers }) {
             </div>
           )}
         </div>
-        {/* <Widgets
+        <Widgets
           trendingResults={trendingResults}
           followResults={followResults}
-        /> */}
+        />
 
         {isOpen && <Modal />}
       </main>
