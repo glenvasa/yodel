@@ -29,7 +29,7 @@ function Trending({ result }) {
         />
       ) : (
         <div className="icon group">
-          <DotsHorizontalIcon className="h-5 text-[#6e767d] group-hover:text-[#1d9bf0]" />
+          <DotsHorizontalIcon className="h-5 text-[#6e767d] group-hover:text-[#3ebe5e]" />
         </div>
       )}
     </div>
