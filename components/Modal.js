@@ -32,13 +32,13 @@ function Modal() {
 
   const router = useRouter();
 
-//   useEffect(
-//     () =>
-//       onSnapshot(doc(db, "posts", postId), (snapshot) => {
-//         setPost(snapshot.data());
-//       }),
-//     [db]
-//   );
+  useEffect(
+    () =>
+      onSnapshot(doc(db, "posts", postId), (snapshot) => {
+        setPost(snapshot.data());
+      }),
+    [db]
+  );
 
   const sendComment = async (e) => {
     e.preventDefault();
@@ -57,6 +57,8 @@ function Modal() {
     router.push(`/${postId}`);
   };
 
+
+  
   return (
     <Transition.Root show={isOpen} as={Fragment}>
       <Dialog as="div" className="fixed z-50 inset-0 pt-8" onClose={setIsOpen}>
