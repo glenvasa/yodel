@@ -1,4 +1,4 @@
-# Heroes & Villains
+# Yodel
 
 - Twitter-lite social media application 
 - Developed with React.js, Next.js, NextAuth, Tailwind CSS, and Firebase v9. 
