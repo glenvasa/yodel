@@ -1,3 +1,5 @@
+# Heroes & Villains
+
 - Twitter-lite social media application 
 - Developed with React.js, Next.js, NextAuth, Tailwind CSS, and Firebase v9. 
 - Recoil used for global state management. 
